@@ -4,15 +4,17 @@ import styles from '../styles/Register.module.css';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from '../../api/axios';
-import { env } from '../../env/environment';
+import { Link } from 'react-router-dom';
 
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const EMAIL_REGEX = /^[A-z0-9._%+-]+@[A-z0-9-.]+\.[A-z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!#@$%]).{8,24}$/;
 const UPPER_REGEX = /^(?=.*[A-Z]).*$/;
 const LOWER_REGEX = /^(?=.*[a-z]).*$/;
 const NUM_REGEX = /^(?=.*[0-9]).*$/;
 const SPECIAL_CHAR_REGEX = /^(.*[!#@$%]).*$/;
 const PWD_SIZE_REGEX = /^(?=.*).{8,24}$/;
+const REGISTER_URL = "/auth/user";
 
 export default function Register() {
 
@@ -23,9 +25,16 @@ export default function Register() {
     const [validUsername, setValidUsername] = useState(false);
     const [usernameFocus, setUsernameFocus] = useState(false);
 
+    const [email, setEmail] = useState('');
+    const [validEmail, setValidEmail] = useState(false);
+    const [emailFocus, setEmailFocus] = useState(false);
+    const [emailblur, setEmailBlur] = useState(false);
+
+
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
     const [pwdFocus, setPwdFocus] = useState(false);
+
     const [numCheck, setNumCheck] = useState(false);
     const [upperCheck, setUpperCheck] = useState(false);
     const [lowerCheck, setLowerCheck] = useState(false);
@@ -47,6 +56,11 @@ export default function Register() {
         const result = USERNAME_REGEX.test(username);
         setValidUsername(result);
     }, [username])
+
+    useEffect(() => {
+        const result = EMAIL_REGEX.test(email);
+        setValidEmail(result);
+    }, [email])
 
     useEffect(() => {
         const resultPwd = PWD_REGEX.test(pwd);
@@ -71,7 +85,7 @@ export default function Register() {
 
     useEffect(() => {
         setErrMsg('');
-    }, [username, pwd, matchPwd])
+    }, [username, pwd, matchPwd, email])
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -86,30 +100,41 @@ export default function Register() {
         }
 
         try {
-            await axios
-                .post(env.REGISTER_URL,
+            const response = await axios
+                .post(REGISTER_URL,
                     {
-                        email: username,
+                        username: username,
+                        email: email,
                         password: pwd,
                         roles: ["USER"]
                     }
-                )
-                .then(() => {
-                    setSuccess(true);
-                })
-                .catch(err => {
-                    console.log(err)
-                    console.log(err.response.status)
-                    if (err.response.status === 409) {
-                        setErrMsg("Nome de usuário já existe.");
-                        errRef.current.focus();
-                    }
-                });
+                );
+            console.log(response?.data);
+            setUsername('');
+            setPwd('');
+            setMatchPwd('');
+            setSuccess(true);
 
         } catch (error) {
-            setErrMsg(error.message);
+
+            const errorReason = error.response.data.reason;
+
+            if (!error?.response) {
+                setErrMsg('O servidor não está respondendo.');
+            }
+
+            if (error.response.status === 409) {
+                if (errorReason === "username") {
+                    setErrMsg('Nome de usuário já existe.');
+                } else if (errorReason === "email") {
+                    setErrMsg('e-mail já cadastrado.');
+                }
+                console.log(error);
+            } else {
+                setErrMsg("Falha ao registrar.");
+            }
+
             errRef.current.focus();
-            console.log(error.message)
         }
 
     }
@@ -118,17 +143,18 @@ export default function Register() {
         <>
             {success ?
                 (
-                    <section className={styles.register}>
-                        <span className={`${styles.form} text-center`}>
-                            Sucesso na requisição!
-                        </span>
+                    <section className={styles.section}>
+                        <div className={`${styles.form} d-flex flex-column align-items-center`}>
+                            <span>Usuário registrado com sucesso!</span><br />
+                            <Link to='/authorization' className='btn btn-warning w-50'>Fazer login</Link>
+                        </div>
                     </section>
                 ) :
                 (
-                    <section className={styles.register}>
+                    <section section className={styles.section}>
+                        <p ref={errRef} className={errMsg ? styles.errmsg : styles.offScreen} aria-live='assertive'>{errMsg}</p>
                         <form onSubmit={handleSubmit} className={styles.form}>
-                            <p ref={errRef} className={errMsg ? styles.errmsg : styles.offScreen} aria-live='assertive'>{errMsg}</p>
-                            <h1 className={styles.h1}>Registre-se</h1>
+                            <h1>Registre-se</h1>
                             <label htmlFor='username'>
                                 Usuário:
                                 <span className={validUsername ? styles.valid : styles.hide}>
@@ -162,6 +188,36 @@ export default function Register() {
                                     Letras, números, hífens, underlines apenas.
                                 </span>
                             </p>
+                            <label htmlFor='email'>
+                                E-mail:
+                                <span className={validEmail && emailFocus ? styles.valid : styles.hide}>
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </span>
+                                <span className={!validEmail && emailFocus && email ? styles.invalid : styles.hide}>
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </span>
+                            </label>
+                            <input
+                                className={styles.input}
+                                id='email'
+                                type='text'
+                                aria-invalid={validEmail ? "false" : "true"}
+                                required
+                                aria-describedby="emailnote"
+                                onChange={(e) => setEmail(e.target.value)}
+                                onFocus={() => {
+                                    setEmailFocus(true);
+                                }}
+                                onBlur={() => {
+                                    setEmailBlur(true);
+                                    console.log(validEmail)
+                                }}
+                            />
+                            <p id='emailnote' className={!validEmail
+                                && email && emailblur ? styles.instructions : styles.offscreen}>
+                                <FontAwesomeIcon icon={faTimes} className={styles.invalid} />
+                                E-mail inválido.
+                            </p>
                             <label htmlFor='pwd'>
                                 Senha:
                                 <span className={validPwd ? styles.valid : styles.hide}>
@@ -186,27 +242,27 @@ export default function Register() {
                             <p
                                 id='pwdnote'
                                 className={pwdFocus && !validPwd ? styles.instructions : styles.offscreen}>
-                                <span className='d-flex'>
+                                <span className='d-flex align-items-center'>
                                     <FontAwesomeIcon icon={faCheck} className={upperCheck ? styles.valid : styles.hide} />
                                     <FontAwesomeIcon icon={faTimes} className={!upperCheck ? styles.invalid : styles.hide} />
                                     Deve conter pelo menos uma letra maúscula.
                                 </span>
-                                <span className='d-flex'>
+                                <span className='d-flex align-items-center'>
                                     <FontAwesomeIcon icon={faCheck} className={lowerCheck ? styles.valid : styles.hide} />
                                     <FontAwesomeIcon icon={faTimes} className={!lowerCheck ? styles.invalid : styles.hide} />
                                     Deve conter pelo menos uma letra minúscula.
                                 </span>
-                                <span className='d-flex'>
+                                <span className='d-flex align-items-center'>
                                     <FontAwesomeIcon icon={faCheck} className={numCheck ? styles.valid : styles.hide} />
                                     <FontAwesomeIcon icon={faTimes} className={!numCheck ? styles.invalid : styles.hide} />
                                     Deve conter pelo menos um número.
                                 </span>
-                                <span className='d-flex'>
+                                <span className='d-flex align-items-center'>
                                     <FontAwesomeIcon icon={faCheck} className={charCheck ? styles.valid : styles.hide} />
                                     <FontAwesomeIcon icon={faTimes} className={!charCheck ? styles.invalid : styles.hide} />
                                     Deve conter pelo menos um caractere especial (!#@$%).
                                 </span>
-                                <span className='d-flex'>
+                                <span className='d-flex align-items-center'>
                                     <FontAwesomeIcon icon={faCheck} className={sizeCheck ? styles.valid : styles.hide} />
                                     <FontAwesomeIcon icon={faTimes} className={!sizeCheck ? styles.invalid : styles.hide} />
                                     Deve conter de 8 a 24 caracteres.
@@ -242,13 +298,13 @@ export default function Register() {
                             </p>
 
                             <button
-                                className='btn btn-warning mt-5'
+                                className='btn btn-warning p-2 mt-4 w-100 align-self-center'
                                 onClick={(e) => handleSubmit(e)}
-                                disabled={!validUsername || !validPwd || !validMatch ? true : false}>
+                                disabled={!validUsername || !validPwd || !validMatch || !validEmail ? true : false}>
                                 Enviar
                             </button>
                         </form>
-                    </section>
+                    </section >
                 )
             }
         </>

@@ -4,7 +4,10 @@ export default function Header() {
     return (
         <header>
             <span>LOGO</span>
-            <Link to='/register'>Cadastrar</Link>
+            <div>
+                <Link to='/authorization'>Entrar</Link>
+                <Link to='/register' className="mx-3">Cadastrar</Link>
+            </div>
         </header>
     )
 }
