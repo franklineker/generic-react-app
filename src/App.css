@@ -3,9 +3,9 @@
 }
 
 aside {
-    background-color: #000;
-    width: 30vh;
+    background-color: #020430;
     height: 100vh;
+    width: 15%;
     color: #fff;
 }
 
@@ -36,12 +36,11 @@ aside li:hover a {
 }
 
 header {
-    background-color: yellow;
-    height: 6vh;
+    background-color: #777777;
+    height: 8vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 1vh;
 }
 
 header a {
@@ -50,11 +49,29 @@ header a {
 }
 
 main {
-    height: 89vh;
+    height: 88vh;
+    overflow-wrap: anywhere;
+    background-color: #ACACAC;
+    padding: 2vh;
 }
 
 footer {
-    background-color: yellow;
-    height: 5vh;
+    background-color: #777777;
+    height: 4vh;
+    color: #fff;
+    text-align: end;
+    padding-right: 2vh;
+}
 
+.block2 {
+    width: 85%;
+}
+
+#loginButton {
+    background-color: #020430;
+    color: #fff;
+}
+
+#loginButton:hover {
+    background-color: #040970;
 }

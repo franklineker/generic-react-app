@@ -8,16 +8,16 @@ import { AuthProvider } from './context/AuthProvider';
 
 function App() {
     return (
-        <AuthProvider>
-            <div className='App'>
+        <div className='App'>
+            <AuthProvider>
                 <Menu />
-                <div className='d-flex flex-column w-100'>
+                <div className='d-flex flex-column block2'>
                     <Header />
                     <Main />
                     <Footer />
                 </div>
-            </div>
-        </AuthProvider>
+            </AuthProvider>
+        </div>
     )
 }
 

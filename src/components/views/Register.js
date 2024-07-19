@@ -298,7 +298,7 @@ export default function Register() {
                             </p>
 
                             <button
-                                className='btn btn-warning p-2 mt-4 w-100 align-self-center'
+                                className={`btn btn-lg ${styles.button}`}
                                 onClick={(e) => handleSubmit(e)}
                                 disabled={!validUsername || !validPwd || !validMatch || !validEmail ? true : false}>
                                 Enviar

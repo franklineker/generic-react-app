@@ -1,6 +1,10 @@
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Footer() {
     return (
-        <footer>Footer</footer>
+        <footer>
+            <span>Feito com <FontAwesomeIcon icon={faHeart} className="text-danger" /> por Frank L X Rocha</span>
+        </footer>
     )
 }

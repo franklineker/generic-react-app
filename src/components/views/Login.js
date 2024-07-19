@@ -4,6 +4,7 @@ import AuthContext from "../../context/AuthProvider";
 import styles from "../styles/Register.module.css";
 import axios from "axios";
 import { env } from "../../env/environment";
+import { useNavigate } from "react-router-dom";
 
 const TOKEN_URL = env.TOKEN_URL;
 const REDIRECT_URL = env.REDIRECT_URL;
@@ -14,8 +15,7 @@ const CLIENT_SECRET = env.CLIENT_SECRET;
 export default function Login() {
 
     const { auth, setAuth } = useContext(AuthContext);
-    console.log("auth ", auth)
-
+    const navigate = useNavigate();
 
     const handleToken = async () => {
 
@@ -30,8 +30,6 @@ export default function Login() {
         body.set("redirect_uri", REDIRECT_URL);
         body.set("code_verifier", codeVerifier);
         body.set("code", code);
-
-        console.log(body.toString());
 
         try {
             const response = await axios.post(TOKEN_URL, body, {
@@ -53,21 +51,21 @@ export default function Login() {
                 accessToken: accessToken
             })));
             localStorage.removeItem("codeVerifier");
-            console.log("auth => ", auth);
+            navigate("/");
 
         } catch (error) {
-            console.log("auth => ", auth);
             console.log(error);
         }
 
     }
+
     useEffect(() => {
         handleToken();
     }, [])
 
     return (
         <section className={styles.section}>
-            <span>Login: {auth.accessToken}</span>
+            <span>Login:</span>
         </section>
     )
 }
