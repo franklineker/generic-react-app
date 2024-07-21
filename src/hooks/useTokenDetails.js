@@ -1,24 +1,20 @@
 
-import { useContext } from 'react';
-import AuthContext from './../context/AuthProvider';
-import { jwtDecode } from 'jwt-decode';
+import useAuth from './useAuth';
+
 
 const useIsAdmin = () => {
-    const { auth } = useContext(AuthContext);
-    let roles;
+    const { auth } = useAuth();
+    const isAdmin = auth.user?.roles.find(role => role === "ADMIN") ? true : false;
 
-    if (auth && auth.accessToken) {
-        const decodedToken = jwtDecode(auth.accessToken);
-        console.log("decoded token =>", decodedToken);
-        roles = decodedToken.roles;
-
-    } else {
-        console.log("Token is not set.");
-        return;
-    }
-
-    return roles.find(role => role === "ADMIN") ? true : false;
+    return isAdmin;
 }
 
-export { useIsAdmin }
+const useIsLogged = () => {
+    const { auth } = useAuth();
+    const isLogged = auth.accessToken ? true : false;
+
+    return isLogged;
+}
+
+export { useIsAdmin, useIsLogged }
 

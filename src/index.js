@@ -8,6 +8,9 @@ import Home from './components/templates/Home';
 import Register from './components/views/Register';
 import Login from './components/views/Login';
 import Authorization from './components/views/Authorization';
+import Profile from './components/views/Profile';
+import Contact from './components/views/Contact';
+import Help from './components/views/Help';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +22,9 @@ root.render(
                     <Route path='register' element={<Register />} />
                     <Route path='login' element={<Login />} />
                     <Route path='authorization' element={<Authorization />} />
+                    <Route path='profile' element={<Profile />} />
+                    <Route path='contact' element={<Contact />} />
+                    <Route path='help' element={<Help />} />
                 </Route>
             </Routes>
         </BrowserRouter>

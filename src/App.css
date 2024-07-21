@@ -9,15 +9,28 @@ aside {
     color: #fff;
 }
 
+aside nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+
 aside ul {
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 aside li {
     list-style-type: none;
-    padding: 1vh 2vh;
     display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-radius: 5px;
+    margin-bottom: 2px;
+    font-size: 1.5rem;
 }
 
 aside li:hover {
@@ -29,6 +42,7 @@ aside li a {
     text-decoration: none;
     color: #fff;
     width: 100%;
+    padding: 10px 10px
 }
 
 aside li:hover a {
