@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect } from "react";
-import { env } from "../../env/environment";
-import AuthContext from "../../context/AuthProvider";
+import { useEffect } from "react";
 import CryptoJS from 'crypto-js';
+import useAuth from "../../hooks/useAuth";
 
-const AUTH_URL = env.AUTHORIZATION_URL;
-const REDIRECT_URI = env.REDIRECT_URL;
-const CLIENT_ID = env.CLIENT_ID;
-const SCOPE = env.SCOPES;
+const AUTH_URL = process.env.REACT_APP_AUTHORIZATION_URL;
+const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URL;
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+const SCOPE = process.env.REACT_APP_SCOPES;
 const RESPONSE_TYPE = "code";
 const RESPONSE_MODE = "form_post";
 const CODE_CHALLENGE_METHOD = "S256"
@@ -15,7 +14,7 @@ const CHARACTERS = 'ABCDEFGHIJKLMNOPQWXYZabcdefghijklmnopqwxyz0123456789';
 
 export default function Authorization() {
 
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth } = useAuth();
 
     const handleCodeVerifier = () => {
         let codeVerifier = "";
@@ -51,7 +50,7 @@ export default function Authorization() {
         body.set("code_challenge_method", CODE_CHALLENGE_METHOD);
         body.set("code_challenge", challenge);
 
-        const codeURL = AUTH_URL + body.toString();
+        const codeURL = AUTH_URL + "?" + body.toString();
 
         console.log("code url => ", codeURL)
 

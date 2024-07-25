@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect } from "react"
 import AuthContext from "../../context/AuthProvider";
-import styles from "../styles/Register.module.css";
 import axios from "axios";
-import { env } from "../../env/environment";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-const TOKEN_URL = env.TOKEN_URL;
-const REDIRECT_URL = env.REDIRECT_URL;
-const GRANT_TYPE = env.GRANT_TYPE;
-const CLIENT_ID = env.CLIENT_ID;
-const CLIENT_SECRET = env.CLIENT_SECRET;
+const TOKEN_URL = process.env.REACT_APP_TOKEN_URL;
+const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL;
+const GRANT_TYPE = process.env.REACT_APP_GRANT_TYPE;
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
 
 export default function Login() {
 
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state?.pathname || "/"
 
     const handleToken = async () => {
 
@@ -43,7 +43,7 @@ export default function Login() {
             });
 
             const accessToken = response.data.access_token;
-            const refreshToken = response.data.access_token;
+            const refreshToken = response.data.refresh_token;
             const decodedToken = jwtDecode(accessToken);
             const roles = decodedToken.roles;
 
@@ -57,7 +57,7 @@ export default function Login() {
             })));
 
             localStorage.removeItem("codeVerifier");
-            navigate("/");
+            navigate(from, { replace: true });
 
         } catch (error) {
             console.log(error);
@@ -72,9 +72,9 @@ export default function Login() {
         handleToken();
     }, [])
 
-    return (
-        <section className={styles.section}>
-            <span>Login:</span>
-        </section>
-    )
+    // return (
+    //     <section className={styles.section}>
+    //         <span>Login:</span>
+    //     </section>
+    // )
 }

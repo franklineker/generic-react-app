@@ -4,29 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './components/templates/Home';
-import Register from './components/views/Register';
-import Login from './components/views/Login';
-import Authorization from './components/views/Authorization';
-import Profile from './components/views/Profile';
-import Contact from './components/views/Contact';
-import Help from './components/views/Help';
+import { AuthProvider } from './context/AuthProvider';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <BrowserRouter>
-            <Routes>
-                <Route path='/' element={<App />}>
-                    <Route path='' element={<Home />} />
-                    <Route path='register' element={<Register />} />
-                    <Route path='login' element={<Login />} />
-                    <Route path='authorization' element={<Authorization />} />
-                    <Route path='profile' element={<Profile />} />
-                    <Route path='contact' element={<Contact />} />
-                    <Route path='help' element={<Help />} />
-                </Route>
-            </Routes>
+            <AuthProvider>
+                <Routes>
+                    <Route path='/*' element={<App />} />
+                </Routes>
+            </AuthProvider>
         </BrowserRouter>
     </React.StrictMode>
 );

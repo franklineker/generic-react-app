@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import styles from '../styles/Register.module.css';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from '../../api/axios';
+import { authAxios } from '../../api/axios';
 import { Link } from 'react-router-dom';
 
 const USERNAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -100,7 +100,7 @@ export default function Register() {
         }
 
         try {
-            const response = await axios
+            const response = await authAxios
                 .post(REGISTER_URL,
                     {
                         username: username,
