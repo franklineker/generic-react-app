@@ -3,7 +3,7 @@ This is a sample of a React front-end application to Sign-up and Sign-in users, 
 
 ## Installation
 
-Use `npm` to install and run the projecct localy:
+Use `npm` to install and run the projecct locally:
 
 ```bash
 npm install
